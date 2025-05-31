@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Snake</string>
+    <string name="help_title">Joc de la Serp</string>
+    <string name="settings_username_label">Nom de usuari</string>
+    <string name="settings_timer_label">Activar temporitzador de 1 minut</string>
+    <string name="settings_difficulty_label">Dificultat:</string>
+    <string name="settings_field_size_label">Mida del camp:</string>
+    <string name="help_description">
+        L\'objectiu del joc és menjar les pomes per fer créixer la serp i aconseguir la màxima puntuació possible.
+        La partida acaba si la serp xoca amb ella mateixa o amb les parets.
+    </string>
+    <string name="snake_controls_description">Controls de moviment de la serp</string>
+    <string name="help_controls_explanation">
+    Utilitza els botons amb fletxes per moure la serp cap amunt, avall, esquerra i dreta.
+    Cada cop que menges una poma, la serp creix.
+    Mantingues la serp viva el màxim temps possible!
+    </string>
+
+
+
+    <string name="difficulty_easy">Fàcil</string>
+    <string name="difficulty_medium">Mitjana</string>
+    <string name="difficulty_hard">Difícil</string>
+
+    <string name="field_small">Petit</string>
+    <string name="field_medium">Mitjà</string>
+    <string name="field_large">Gran</string>
+
+    <string name="game_score">Puntuació: %1$d</string>
+    <string name="game_timer">Temps restant: %1$d s</string>
+    <string name="game_over">Fi del joc!</string>
+    <string name="game_win">Has guanyat! </string>
+
+    <string name="direction_up">Amunt</string>
+    <string name="direction_down">Avall</string>
+    <string name="direction_left">Esquerra</string>
+    <string name="direction_right">Dreta</string>
+
+    <string name="apple_description">Poma</string>
+
+    <string name="settings_email_label">Correu per enviar resultats</string>
+    <string name="settings_send">Enviar</string>
+    <string name="email_subject_win">Has guanyat al joc de la serp!</string>
+    <string name="email_subject_lose">Final del joc - Serp</string>
+    <string name="email_body">Resultat del jugador: %1$s\nPuntuació: %2$d\nResultat: %3$s</string>
+    <string name="email_result_win">Victòria</string>
+    <string name="email_result_lose">Derrota</string>
+    <string name="email_chooser_title">Envia resultat per correu</string>
+    <string name="email_no_app">No sha trobat cap app de correu</string>
+</resources>
