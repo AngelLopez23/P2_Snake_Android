@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.xr.compose.testing.toDp
 import com.example.snake.model.GridPosition
 import com.example.snake.model.Snake
@@ -145,7 +144,9 @@ fun GameScreen(
                         isGameWon = gameState.isGameWon,
                         score = gameState.score,
                         username = settingsViewModel.settings.username,
-                        recipientEmail = settingsViewModel.settings.recipientEmail
+                        recipientEmail = settingsViewModel.settings.recipientEmail,
+                        remainingTime = gameState.remainingTime,
+                        elapsedTime = gameState.elapsedTime
                     )
                 }
 
@@ -231,7 +232,9 @@ fun GameScreen(
                     isGameWon = gameState.isGameWon,
                     score = gameState.score,
                     username = settingsViewModel.settings.username,
-                    recipientEmail = settingsViewModel.settings.recipientEmail
+                    recipientEmail = settingsViewModel.settings.recipientEmail,
+                    remainingTime = gameState.remainingTime,
+                    elapsedTime = gameState.elapsedTime
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -381,7 +384,9 @@ fun VictoryDefeatEmailSection(
     isGameWon: Boolean,
     score: Int,
     username: String,
-    recipientEmail: String
+    recipientEmail: String,
+    remainingTime: Int,
+    elapsedTime: Int
 ) {
     if (!isGameOver) return
 
@@ -499,6 +504,7 @@ fun SendResultEmailButton(
     score: Int,
     username: String,
     recipientEmail: String
+
 ) {
     val context = LocalContext.current
 

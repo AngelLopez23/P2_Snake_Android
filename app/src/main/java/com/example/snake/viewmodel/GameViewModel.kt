@@ -58,7 +58,8 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             timerJob = viewModelScope.launch {
                 while (remainingTime >= 0) {
                     delay(1000L)
-                    remainingTime--
+                    gameState.remainingTime -1
+                    gameState.elapsedTime +1
                 }
                 gameState = gameState.copy(isGameOver = true)
             }
@@ -67,6 +68,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
 
     private fun moveSnake() {
         val head = gameState.snake.body.first()
+        gameState.elapsedTime +1
 
         val newHead = when (gameState.snake.direction) {
             Direction.UP -> GridPosition(head.x, head.y - 1)
