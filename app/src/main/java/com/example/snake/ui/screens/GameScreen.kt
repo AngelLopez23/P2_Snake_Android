@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.xr.compose.testing.toDp
 import com.example.snake.model.GridPosition
 import com.example.snake.model.Snake
+import kotlin.concurrent.timer
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -138,20 +139,30 @@ fun GameScreen(
                         timerEnabled = settingsViewModel.settings.timerEnabled,
                         isGameOver = gameState.isGameOver
                     )
+
                     Spacer(modifier = Modifier.height(16.dp))
+                    if (!gameState.isGameOver) {
+                        //LOG
+                        LogDisplay(log = gameViewModel.latestLog, isLandscape = isLandscape)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     // Mensaje victoria / derrota
                     VictoryDefeatEmailSection(
                         isGameOver = gameState.isGameOver,
                         isGameWon = gameState.isGameWon,
                         score = gameState.score,
                         username = settingsViewModel.settings.username,
-                        recipientEmail = settingsViewModel.settings.recipientEmail
+                        recipientEmail = settingsViewModel.settings.recipientEmail,
+                        gameViewModel=gameViewModel,
+                        timerEnabled = settingsViewModel.settings.timerEnabled
                     )
                 }
-
-                // COLUMNA (botons)
-                DirectionControls { direction ->
-                    gameViewModel.changeDirection(direction)
+                if (!gameState.isGameOver) {
+                    // COLUMNA (botons)
+                    DirectionControls { direction ->
+                        gameViewModel.changeDirection(direction)
+                    }
                 }
             }
         }
@@ -231,21 +242,51 @@ fun GameScreen(
                     isGameWon = gameState.isGameWon,
                     score = gameState.score,
                     username = settingsViewModel.settings.username,
-                    recipientEmail = settingsViewModel.settings.recipientEmail
+                    recipientEmail = settingsViewModel.settings.recipientEmail,
+                    gameViewModel=gameViewModel,
+                    timerEnabled = settingsViewModel.settings.timerEnabled
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                if (!gameState.isGameOver) {
+                    //LOG
+                    LogDisplay(log = gameViewModel.latestLog, isLandscape = isLandscape)
 
-                // COLUMNA (botons)
-                DirectionControls { direction ->
-                    gameViewModel.changeDirection(direction)
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // COLUMNA (botons)
+                    DirectionControls { direction ->
+                        gameViewModel.changeDirection(direction)
+                    }
                 }
             }
         }
     }
 }
 
-//////////////// FUNCIONS /////////////////////////////////////////////////////////
+///////////////////////////////// FUNCIONS /////////////////////////////////////////////////////////
+
+@Composable
+fun LogDisplay(log: String, isLandscape: Boolean) {
+    if (log.isNotEmpty()) {
+        Card(
+            modifier = Modifier
+                .padding(8.dp)
+                .then(
+                    if (isLandscape) Modifier.widthIn(max = 200.dp)
+                    else Modifier.fillMaxWidth()
+                ),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Text(
+                text = log,
+                modifier = Modifier.padding(8.dp),
+                color = Color.Black
+            )
+        }
+    }
+}
 
 @Composable
 fun DirectionButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit) {
@@ -364,7 +405,7 @@ fun ScoreAndTimerCard(
                 text = "Puntuación: $score",
                 color = Color.Black
             )
-            if (timerEnabled && !isGameOver) {
+            if (timerEnabled) {
                 Text(
                     text = "Tiempo restante: $remainingTime s",
                     color = Color.Black
@@ -381,7 +422,9 @@ fun VictoryDefeatEmailSection(
     isGameWon: Boolean,
     score: Int,
     username: String,
-    recipientEmail: String
+    recipientEmail: String,
+    gameViewModel:GameViewModel,
+    timerEnabled: Boolean
 ) {
     if (!isGameOver) return
 
@@ -417,8 +460,12 @@ fun VictoryDefeatEmailSection(
             isGameOver = isGameOver,
             score = score,
             username = username,
-            recipientEmail = recipientEmail
+            recipientEmail = recipientEmail,
+            logContent = gameViewModel.getFullLog(),
+            remainingTime = gameViewModel.remainingTime,
+            timerEnabled = timerEnabled
         )
+
     }
 }
 
@@ -498,7 +545,10 @@ fun SendResultEmailButton(
     isGameOver: Boolean,
     score: Int,
     username: String,
-    recipientEmail: String
+    recipientEmail: String,
+    logContent: String,
+    remainingTime: Int,
+    timerEnabled: Boolean
 ) {
     val context = LocalContext.current
 
@@ -516,7 +566,7 @@ fun SendResultEmailButton(
             username,
             score,
             resultText
-        )
+        ) + (if (timerEnabled) "\n\nTemps restant: $remainingTime" else " ") + "\n\nLog:\n$logContent"
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "message/rfc822"

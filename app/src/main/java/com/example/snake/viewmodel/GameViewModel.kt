@@ -35,8 +35,42 @@ class GameViewModel(application: Application, private val soundService: SoundSer
     var settings = GameSettings()
         private set
 
+    var latestLog by mutableStateOf("")
+        private set
+
+    private val logHistory = mutableListOf<String>()
+
+    fun getFullLog(): String {
+        return logHistory.joinToString("\n")
+    }
+
+    private var startTime: Long = 0L  // en mil·lisegons
+
+    fun startGame() {
+        startTime = System.currentTimeMillis()
+        logHistory.clear()
+        latestLog = ""
+    }
+
+    private fun logEvent(event: String) {
+        val elapsedMillis = System.currentTimeMillis() - startTime
+
+        val minutes = (elapsedMillis / 1000) / 60
+        val seconds = (elapsedMillis / 1000) % 60
+
+        val currentTime = String.format("%02d:%02d", minutes, seconds)
+
+        val log = "$currentTime $event"
+        latestLog = log
+        logHistory.add(log)
+    }
+
+
     fun startGame(settings: GameSettings) {
+        logHistory.clear()
+        latestLog = ""
         playing = true
+        startGame()
         this.settings = settings
         gameState = GameState(
             snake = Snake(
@@ -58,7 +92,9 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             timerJob = viewModelScope.launch {
                 while (remainingTime >= 0) {
                     delay(1000L)
-                    remainingTime--
+                    if (playing){
+                        remainingTime--
+                    }
                 }
                 gameState = gameState.copy(isGameOver = true)
             }
@@ -80,6 +116,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             newHead.x >= settings.fieldSize.width || newHead.y >= settings.fieldSize.height ||
             gameState.snake.body.contains(newHead)
         ) {
+            logEvent("Defeat")
             soundService.playGameOver()
             gameState = gameState.copy(isGameOver = true)
             playing = false
@@ -91,6 +128,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
 
         // Comió la comida
         if (newHead == gameState.food) {
+            logEvent("Snake eat apple")
             soundService.playEat()
             val maxCells = settings.fieldSize.width * settings.fieldSize.height
             val didWin = newBody.size == maxCells
@@ -145,6 +183,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             gameState = gameState.copy(
                 snake = gameState.snake.copy(direction = direction)
             )
+            logEvent("Snake turn ${direction.name.lowercase()}")
         }
     }
 }
