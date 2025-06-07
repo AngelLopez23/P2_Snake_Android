@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.snake.model.GameSettings
 import androidx.xr.compose.testing.toDp
+import com.example.snake.data.AppDatabase
+import com.example.snake.data.GameResult
 import com.example.snake.model.GridPosition
 import com.example.snake.model.Snake
 import kotlin.concurrent.timer
@@ -437,6 +439,25 @@ fun VictoryDefeatEmailSection(
 
     val backgroundColor = if (isGameWon) Color.Yellow else Color.Red
     val textColor = if (isGameWon) Color.Black else Color.White
+
+    // Obtener el contexto para acceder a la base de datos
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context) // Obtener la instancia de la base de datos
+    val gameResultDao = db.gameResultDao()
+
+    // Guardar el resultado en la base de datos
+    LaunchedEffect(Unit) {
+        val gameResult = GameResult(
+            username = username,
+            recipientEmail = recipientEmail,
+            score = score,
+            isGameWon = isGameWon,
+            remainingTime = gameViewModel.remainingTime,
+            logContent = gameViewModel.getFullLog()
+        )
+        // Insertar el resultado en la base de datos
+        gameResultDao.insertGameResult(gameResult)
+    }
 
     Column(
         modifier = Modifier.padding(top = 16.dp),

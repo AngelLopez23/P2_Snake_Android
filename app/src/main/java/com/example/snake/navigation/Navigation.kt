@@ -8,12 +8,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.snake.ui.screens.GameScreen
 import com.example.snake.ui.screens.HelpScreen
+import com.example.snake.ui.screens.HistoryScreen
 import com.example.snake.ui.screens.SettingsScreen
 import com.example.snake.viewmodel.GameViewModel
 import com.example.snake.viewmodel.SettingsViewModel
 
 enum class Screens {
-    GAME, SETTINGS, HELP
+    GAME, SETTINGS, HELP, HISTORY
 }
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -33,5 +34,10 @@ fun AppNavigation(
         composable(Screens.HELP.name) {
             HelpScreen()
         }
+        composable(Screens.HISTORY.name){
+            HistoryScreen()
+        }
     }
 }
+
+
