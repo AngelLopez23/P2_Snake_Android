@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.snake.model.GameSettings
 import androidx.xr.compose.testing.toDp
 import com.example.snake.model.GridPosition
 import com.example.snake.model.Snake
@@ -47,10 +48,11 @@ fun GameScreen(
     gameViewModel: GameViewModel,
     settingsViewModel: SettingsViewModel
 ) {
+    val settings by settingsViewModel.settings.collectAsState()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val gameState = gameViewModel.gameState
-    val fieldSize = settingsViewModel.settings.fieldSize
+    val fieldSize = settings.fieldSize
     var boxSizePx by remember { mutableStateOf(IntSize.Zero) }
     val cellSizePx = remember(boxSizePx, fieldSize) {
         if (fieldSize.width != 0 && fieldSize.height != 0)
@@ -65,7 +67,7 @@ fun GameScreen(
     //Lógica de reinici del joc si les ajustes cambien
     LaunchedEffect(settingsViewModel.settings) {
         if(!gameViewModel.playing){
-            gameViewModel.startGame(settingsViewModel.settings)
+            gameViewModel.startGame(settings)
         }
     }
     if (isLandscape) { // landscape
@@ -136,7 +138,7 @@ fun GameScreen(
                     ScoreAndTimerCard(
                         score = gameState.score,
                         remainingTime = gameViewModel.remainingTime,
-                        timerEnabled = settingsViewModel.settings.timerEnabled,
+                        timerEnabled = settings.timerEnabled,
                         isGameOver = gameState.isGameOver
                     )
 
@@ -152,10 +154,10 @@ fun GameScreen(
                         isGameOver = gameState.isGameOver,
                         isGameWon = gameState.isGameWon,
                         score = gameState.score,
-                        username = settingsViewModel.settings.username,
-                        recipientEmail = settingsViewModel.settings.recipientEmail,
+                        username = settings.username,
+                        recipientEmail = settings.recipientEmail,
                         gameViewModel=gameViewModel,
-                        timerEnabled = settingsViewModel.settings.timerEnabled
+                        timerEnabled = settings.timerEnabled
                     )
                 }
                 if (!gameState.isGameOver) {
@@ -187,7 +189,7 @@ fun GameScreen(
                 ScoreAndTimerCard(
                     score = gameState.score,
                     remainingTime = gameViewModel.remainingTime,
-                    timerEnabled = settingsViewModel.settings.timerEnabled,
+                    timerEnabled = settings.timerEnabled,
                     isGameOver = gameState.isGameOver
                 )
 
@@ -241,10 +243,10 @@ fun GameScreen(
                     isGameOver = gameState.isGameOver,
                     isGameWon = gameState.isGameWon,
                     score = gameState.score,
-                    username = settingsViewModel.settings.username,
-                    recipientEmail = settingsViewModel.settings.recipientEmail,
+                    username = settings.username,
+                    recipientEmail = settings.recipientEmail,
                     gameViewModel=gameViewModel,
-                    timerEnabled = settingsViewModel.settings.timerEnabled
+                    timerEnabled = settings.timerEnabled
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

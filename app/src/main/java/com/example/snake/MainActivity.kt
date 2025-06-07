@@ -18,8 +18,12 @@ import com.example.snake.ui.theme.SnakeGameTheme
 import com.example.snake.viewmodel.GameViewModel
 import com.example.snake.viewmodel.SettingsViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.example.snake.service.SoundService
 import com.example.snake.viewmodel.GameViewModelFactory
+import com.example.snake.datastore.SettingsDataStore
+import com.example.snake.datastore.SettingsRepository
+
 
 class MainActivity : ComponentActivity() {
     private var soundService: SoundService? = null
@@ -30,7 +34,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             SnakeGameTheme {
                 val navController = rememberNavController()
-                val settingsViewModel: SettingsViewModel = viewModel()
+                val context = LocalContext.current.applicationContext
+                val settingsViewModel = remember {
+                    val dataStore = SettingsDataStore(context)
+                    val repository = SettingsRepository(dataStore)
+                    SettingsViewModel(repository)
+                }
+
 
                 val localService = remember {
                     SoundService(applicationContext)
