@@ -9,10 +9,19 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.snake.data.local.GameHistoryEntity
+import com.example.snake.data.local.GameHistoryRepository
 import com.example.snake.service.SoundService
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
-class GameViewModel(application: Application, private val soundService: SoundService) : AndroidViewModel(application) {
+class GameViewModel(
+    application: Application,
+    private val soundService: SoundService,
+    private val repository: GameHistoryRepository
+) : AndroidViewModel(application) {
+
     private var gameJob: Job? = null
     private var timerJob: Job? = null
     var playing by mutableStateOf(false)
@@ -120,6 +129,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             soundService.playGameOver()
             gameState = gameState.copy(isGameOver = true)
             playing = false
+            saveGameHistory()
             return
         }
 
@@ -143,6 +153,7 @@ class GameViewModel(application: Application, private val soundService: SoundSer
 
             if (didWin) {
                 soundService.playGameOver()
+                saveGameHistory()
             }
 
         } else {
@@ -186,4 +197,18 @@ class GameViewModel(application: Application, private val soundService: SoundSer
             logEvent("Snake turn ${direction.name.lowercase()}")
         }
     }
+
+    private fun saveGameHistory() {
+        viewModelScope.launch {
+            val entity = GameHistoryEntity(
+                username = settings.username,
+                score = gameState.score,
+                isGameWon = gameState.isGameWon,
+                timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
+                log = getFullLog()
+            )
+            repository.save(entity)
+        }
+    }
+
 }

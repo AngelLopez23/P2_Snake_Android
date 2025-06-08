@@ -23,6 +23,8 @@ import com.example.snake.service.SoundService
 import com.example.snake.viewmodel.GameViewModelFactory
 import com.example.snake.datastore.SettingsDataStore
 import com.example.snake.datastore.SettingsRepository
+import androidx.compose.material.icons.filled.History
+
 
 
 class MainActivity : ComponentActivity() {
@@ -93,6 +95,15 @@ class MainActivity : ComponentActivity() {
                                 },
                                 icon = { Icon(Icons.Default.Settings, contentDescription = "Ajustes") },
                                 label = { Text("Ajustes") }
+                            )
+                            NavigationBarItem(
+                                selected = selectedScreen == Screens.HISTORY,
+                                onClick = {
+                                    selectedScreen = Screens.HISTORY
+                                    navController.navigate(Screens.HISTORY.name)
+                                },
+                                icon = { Icon(Icons.Default.History, contentDescription = "Historial") },
+                                label = { Text("Historial") }
                             )
                         }
                     }
