@@ -2,8 +2,8 @@ package com.example.snake.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "game_results")
-data class GameResult(
+@Entity(tableName = "Items")
+data class Item(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,  // ID autogenerado
     val username: String,
     val recipientEmail: String,

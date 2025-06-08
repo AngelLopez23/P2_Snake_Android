@@ -3,19 +3,11 @@ package com.example.snake.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import com.example.snake.data.AppDatabase
-import com.example.snake.data.GameResult
-import java.lang.reflect.Modifier
-import androidx.compose.foundation.layout.*  // Importa todo lo relacionado con el layout (como Modifier, Spacer, etc.)
-import androidx.compose.material3.*  // Para las funcionalidades de Material3 como Card, Text, etc.
-import androidx.compose.ui.unit.dp  // Para trabajar con dimensiones (dp)
-import androidx.compose.runtime.*  // Para el uso de remember y LaunchedEffect
-import androidx.compose.ui.tooling.preview.Preview  // Si quieres hacer pruebas con un Preview
+import com.example.snake.data.Item
 
 @Composable
 fun HistoryScreen() {
@@ -24,7 +16,7 @@ fun HistoryScreen() {
     val gameResultDao = db.gameResultDao()
 
     // State para almacenar los resultados
-    val gameResults = remember { mutableStateOf<List<GameResult>>(emptyList()) }
+    val gameResults = remember { mutableStateOf<List<Item>>(emptyList()) }
 
     // Cargar los resultados desde la base de datos
     LaunchedEffect(Unit) {
@@ -45,7 +37,7 @@ fun HistoryScreen() {
 }
 
 @Composable
-fun GameResultItem(result: GameResult) {
+fun GameResultItem(result: Item) {
     Card() {
         Column {
             Text("Jugador: ${result.username}", style = MaterialTheme.typography.bodyMedium)

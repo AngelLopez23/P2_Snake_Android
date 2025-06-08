@@ -35,14 +35,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.snake.model.GameSettings
 import androidx.xr.compose.testing.toDp
 import com.example.snake.data.AppDatabase
-import com.example.snake.data.GameResult
+import com.example.snake.data.Item
 import com.example.snake.model.GridPosition
 import com.example.snake.model.Snake
-import kotlin.concurrent.timer
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
@@ -447,7 +444,7 @@ fun VictoryDefeatEmailSection(
 
     // Guardar el resultado en la base de datos
     LaunchedEffect(Unit) {
-        val gameResult = GameResult(
+        val item = Item(
             username = username,
             recipientEmail = recipientEmail,
             score = score,
@@ -456,7 +453,7 @@ fun VictoryDefeatEmailSection(
             logContent = gameViewModel.getFullLog()
         )
         // Insertar el resultado en la base de datos
-        gameResultDao.insertGameResult(gameResult)
+        gameResultDao.insertGameResult(item)
     }
 
     Column(
