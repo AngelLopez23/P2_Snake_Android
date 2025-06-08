@@ -16,86 +16,143 @@ import com.example.snake.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
     val settings by settingsViewModel.settings.collectAsState()
-
     val orientation = LocalConfiguration.current.orientation
     val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
-
-    val content: @Composable ColumnScope.() -> Unit = {
-        OutlinedTextField(
-            value = settings.username,
-            onValueChange = { settingsViewModel.updateUsername(it) },
-            label = { Text(stringResource(id = R.string.settings_username_label)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = settings.recipientEmail,
-            onValueChange = { settingsViewModel.updateRecipientEmail(it) },
-            label = { Text(stringResource(R.string.settings_email_label)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = settings.timerEnabled,
-                onCheckedChange = { settingsViewModel.toggleTimer(it) }
-            )
-            Text(stringResource(id = R.string.settings_timer_label))
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(id = R.string.settings_difficulty_label))
-        Difficulty.values().forEach { difficulty ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = settings.difficulty == difficulty,
-                    onClick = { settingsViewModel.setDifficulty(difficulty) }
-                )
-                val difficultyLabel = when (difficulty) {
-                    Difficulty.EASY -> R.string.difficulty_easy
-                    Difficulty.MEDIUM -> R.string.difficulty_medium
-                    Difficulty.HARD -> R.string.difficulty_hard
-                }
-                Text(stringResource(id = difficultyLabel))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(id = R.string.settings_field_size_label))
-        FieldSize.values().forEach { size ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = settings.fieldSize == size,
-                    onClick = { settingsViewModel.setFieldSize(size) }
-                )
-                val sizeLabel = when (size) {
-                    FieldSize.SMALL -> R.string.field_small
-                    FieldSize.MEDIUM -> R.string.field_medium
-                    FieldSize.LARGE -> R.string.field_large
-                }
-                Text(stringResource(id = sizeLabel))
-            }
-        }
-    }
 
     if (isLandscape) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Top
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) { content() }
+            // Panell 1: usuari, email, timer
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = settings.username,
+                    onValueChange = { settingsViewModel.updateUsername(it) },
+                    label = { Text(stringResource(id = R.string.settings_username_label)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = settings.recipientEmail,
+                    onValueChange = { settingsViewModel.updateRecipientEmail(it) },
+                    label = { Text(stringResource(R.string.settings_email_label)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = settings.timerEnabled,
+                        onCheckedChange = { settingsViewModel.toggleTimer(it) }
+                    )
+                    Text(stringResource(id = R.string.settings_timer_label))
+                }
+            }
+
+            // Panell 2: dificultat
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(stringResource(id = R.string.settings_difficulty_label))
+                Difficulty.values().forEach { difficulty ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = settings.difficulty == difficulty,
+                            onClick = { settingsViewModel.setDifficulty(difficulty) }
+                        )
+                        val label = when (difficulty) {
+                            Difficulty.EASY -> R.string.difficulty_easy
+                            Difficulty.MEDIUM -> R.string.difficulty_medium
+                            Difficulty.HARD -> R.string.difficulty_hard
+                        }
+                        Text(stringResource(id = label))
+                    }
+                }
+            }
+
+            // Panell 3: mida camp
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(stringResource(id = R.string.settings_field_size_label))
+                FieldSize.values().forEach { size ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = settings.fieldSize == size,
+                            onClick = { settingsViewModel.setFieldSize(size) }
+                        )
+                        val label = when (size) {
+                            FieldSize.SMALL -> R.string.field_small
+                            FieldSize.MEDIUM -> R.string.field_medium
+                            FieldSize.LARGE -> R.string.field_large
+                        }
+                        Text(stringResource(id = label))
+                    }
+                }
+            }
         }
     } else {
+        // Mode vertical normal
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            content()
+            OutlinedTextField(
+                value = settings.username,
+                onValueChange = { settingsViewModel.updateUsername(it) },
+                label = { Text(stringResource(id = R.string.settings_username_label)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = settings.recipientEmail,
+                onValueChange = { settingsViewModel.updateRecipientEmail(it) },
+                label = { Text(stringResource(R.string.settings_email_label)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = settings.timerEnabled,
+                    onCheckedChange = { settingsViewModel.toggleTimer(it) }
+                )
+                Text(stringResource(id = R.string.settings_timer_label))
+            }
+            Text(stringResource(id = R.string.settings_difficulty_label))
+            Difficulty.values().forEach { difficulty ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = settings.difficulty == difficulty,
+                        onClick = { settingsViewModel.setDifficulty(difficulty) }
+                    )
+                    val label = when (difficulty) {
+                        Difficulty.EASY -> R.string.difficulty_easy
+                        Difficulty.MEDIUM -> R.string.difficulty_medium
+                        Difficulty.HARD -> R.string.difficulty_hard
+                    }
+                    Text(stringResource(id = label))
+                }
+            }
+            Text(stringResource(id = R.string.settings_field_size_label))
+            FieldSize.values().forEach { size ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = settings.fieldSize == size,
+                        onClick = { settingsViewModel.setFieldSize(size) }
+                    )
+                    val label = when (size) {
+                        FieldSize.SMALL -> R.string.field_small
+                        FieldSize.MEDIUM -> R.string.field_medium
+                        FieldSize.LARGE -> R.string.field_large
+                    }
+                    Text(stringResource(id = label))
+                }
+            }
         }
     }
 }
