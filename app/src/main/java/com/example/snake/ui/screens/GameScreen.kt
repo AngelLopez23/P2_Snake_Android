@@ -9,7 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -143,10 +145,17 @@ fun GameScreen(
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (!gameState.isGameOver) {
-                        //LOG
-                        LogDisplay(log = gameViewModel.latestLog, isLandscape = isLandscape)
+                    val fullLog = remember { mutableStateListOf<String>() }
+                    LaunchedEffect(gameViewModel.latestLog) {
+                        if (gameViewModel.latestLog.isNotBlank()) {
+                            fullLog.add(gameViewModel.latestLog)
+                        }
                     }
+
+                    if (!gameState.isGameOver) {
+                        LogDisplay(logs = fullLog, isLandscape = isLandscape)
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Mensaje victoria / derrota
@@ -252,7 +261,16 @@ fun GameScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 if (!gameState.isGameOver) {
                     //LOG
-                    LogDisplay(log = gameViewModel.latestLog, isLandscape = isLandscape)
+                    val fullLog = remember { mutableStateListOf<String>() }
+                    LaunchedEffect(gameViewModel.latestLog) {
+                        if (gameViewModel.latestLog.isNotBlank()) {
+                            fullLog.add(gameViewModel.latestLog)
+                        }
+                    }
+
+                    if (!gameState.isGameOver) {
+                        LogDisplay(logs = fullLog, isLandscape = isLandscape)
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -269,26 +287,40 @@ fun GameScreen(
 ///////////////////////////////// FUNCIONS /////////////////////////////////////////////////////////
 
 @Composable
-fun LogDisplay(log: String, isLandscape: Boolean) {
-    if (log.isNotEmpty()) {
+fun LogDisplay(logs: List<String>, isLandscape: Boolean) {
+    if (logs.isNotEmpty()) {
+        val scrollState = rememberScrollState()
+
+        LaunchedEffect(logs.size) {
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+
         Card(
             modifier = Modifier
                 .padding(8.dp)
                 .then(
                     if (isLandscape) Modifier.widthIn(max = 200.dp)
                     else Modifier.fillMaxWidth()
-                ),
+                )
+                .height(50.dp)
+                .verticalScroll(scrollState),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
-            Text(
-                text = log,
-                modifier = Modifier.padding(8.dp),
-                color = Color.Black
-            )
+            Column(modifier = Modifier.padding(8.dp)) {
+                logs.forEach { entry ->
+                    Text(
+                        text = entry,
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
         }
     }
 }
+
+
 
 @Composable
 fun DirectionButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit) {
