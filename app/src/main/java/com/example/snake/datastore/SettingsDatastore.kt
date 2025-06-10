@@ -21,8 +21,8 @@ class SettingsDataStore(private val context: Context) {
 
     val settingsFlow: Flow<GameSettings> = context.dataStore.data.map { preferences ->
         GameSettings(
-            username = preferences[USERNAME] ?: "",
-            recipientEmail = preferences[EMAIL] ?: "",
+            username = preferences[USERNAME] ?: "Default",
+            recipientEmail = preferences[EMAIL] ?: "Default",
             timerEnabled = preferences[TIMER_ENABLED] ?: false,
             difficulty = Difficulty.valueOf(preferences[DIFFICULTY] ?: Difficulty.MEDIUM.name),
             fieldSize = FieldSize.valueOf(preferences[FIELD_SIZE] ?: FieldSize.MEDIUM.name)

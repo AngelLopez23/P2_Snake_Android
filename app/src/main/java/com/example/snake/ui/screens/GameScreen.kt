@@ -202,7 +202,7 @@ fun GameScreen(
                     isGameOver = gameState.isGameOver
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Box(
                     modifier = Modifier
@@ -258,7 +258,7 @@ fun GameScreen(
                     timerEnabled = settings.timerEnabled
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 if (!gameState.isGameOver) {
                     //LOG
                     val fullLog = remember { mutableStateListOf<String>() }
@@ -272,7 +272,7 @@ fun GameScreen(
                         LogDisplay(logs = fullLog, isLandscape = isLandscape)
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // COLUMNA (botons)
                     DirectionControls { direction ->
