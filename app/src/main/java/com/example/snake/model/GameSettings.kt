@@ -1,11 +1,11 @@
 package com.example.snake.model
 
 data class GameSettings(
-    val username: String = "",
+    val username: String = "Default",
     val timerEnabled: Boolean = false,
     val difficulty: Difficulty = Difficulty.MEDIUM,
     val fieldSize: FieldSize = FieldSize.MEDIUM,
-    val recipientEmail: String = ""
+    val recipientEmail: String = "Default"
 )
 
 enum class Difficulty(val speed: Long) {
